@@ -58,10 +58,28 @@
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $leave->created_at->format('d-m-Y') }}</td>
                                         <td>{{ $leave->reason }}</td>
-                                        <td>{{ ucfirst($leave->status) }}</td>
+                                        <td>
+                                            <h5>
+                                                <span 
+                                                @if ($leave->status == 'pending')
+                                                    class="badge badge-pill badge-warning"
+                                                @elseif($leave->status == 'declined')
+                                                    class="badge badge-pill badge-danger"
+                                                @elseif($leave->status == 'approved')
+                                                    class="badge badge-pill badge-success"
+                                                @endif
+                                                >
+                                                    {{ ucfirst($leave->status) }}
+                                                </span> 
+                                            </h5>
+                                        </td>
                                         <td>{{ ucfirst($leave->half_day) }}</td>
                                         <td>{{ $leave->start_date }}</td>
+                                        @if($leave->end_date) 
                                         <td>{{ $leave->end_date }}</td>
+                                        @else
+                                        <td>Single Day</td>
+                                        @endif
                                         <td>{{ $leave->description }}</td>
                                     </tr>
                                     @endforeach

@@ -31,11 +31,19 @@ class LeaveController extends Controller
         $data = [
             'employee' => Auth::user()->employee
         ];
-        $this->validate($request, [
-            'reason' => 'required',
-            'description' => 'required',
-            'date_range' => new DateRange
-        ]);
+        if($request->input('multiple-days') == 'yes') {
+            $this->validate($request, [
+                'reason' => 'required',
+                'description' => 'required',
+                'date_range' => new DateRange
+            ]);
+        } else {
+            $this->validate($request, [
+                'reason' => 'required',
+                'description' => 'required'
+            ]);
+        }
+        
         $values = [
             'employee_id' => $employee_id,
             'reason' => $request->input('reason'),
