@@ -79,7 +79,7 @@
                             
                         </div>
                         <div class="card-body">
-                            @if ($attendances)
+                            @if ($attendances->count())
                             <table class="table table-bordered table-hover" id="dataTable">
                                 <thead>
                                     <tr>

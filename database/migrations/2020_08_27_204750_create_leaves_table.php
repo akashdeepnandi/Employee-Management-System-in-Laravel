@@ -21,6 +21,7 @@ class CreateLeavesTable extends Migration
             $table->string('half_day');
             $table->timestamp('start_date');
             $table->timestamp('end_date')->nullable();
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

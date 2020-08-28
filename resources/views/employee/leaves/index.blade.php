@@ -38,13 +38,14 @@
                             <h3 class="card-title">List of leaves</h3>
                         </div>
                         <div class="card-body">
-                            @if ($leaves)
+                            @if ($leaves->count())
                             <table class="table table-hover" id="dataTable">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Applied on</th>
                                         <th>Reason</th>
+                                        <th>Status</th>
                                         <th>Half Day</th>
                                         <th>Start Date</th>
                                         <th>End Date</th>
@@ -57,6 +58,7 @@
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $leave->created_at->format('d-m-Y') }}</td>
                                         <td>{{ $leave->reason }}</td>
+                                        <td>{{ ucfirst($leave->status) }}</td>
                                         <td>{{ ucfirst($leave->half_day) }}</td>
                                         <td>{{ $leave->start_date }}</td>
                                         <td>{{ $leave->end_date }}</td>
