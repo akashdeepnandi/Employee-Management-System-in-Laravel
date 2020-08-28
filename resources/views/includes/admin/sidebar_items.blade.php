@@ -1,0 +1,90 @@
+<li class="nav-item has-treeview">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fa fa-calendar-check-o"></i>
+        <p>
+            Employees
+            <i class="fas fa-angle-left right"></i>
+            <span class="badge badge-info right">2</span>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a
+                href="pages/layout/top-nav.html"
+                class="nav-link"
+            >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Add Employee</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                href="pages/layout/top-nav.html"
+                class="nav-link"
+            >
+                <i class="far fa-circle nav-icon"></i>
+                <p>List Employees</p>
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="nav-item has-treeview">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fa fa-product-hunt"></i>
+        <p>
+            Projects
+            <i class="fas fa-angle-left right"></i>
+            <span class="badge badge-info right">2</span>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a
+                href="pages/layout/top-nav.html"
+                class="nav-link"
+            >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Create Project</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                href="pages/layout/top-nav.html"
+                class="nav-link"
+            >
+                <i class="far fa-circle nav-icon"></i>
+                <p>List Projects</p>
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="nav-item has-treeview">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fa fa-calendar-minus-o"></i>
+        <p>
+            Holidays
+            <i class="fas fa-angle-left right"></i>
+            <span class="badge badge-info right">2</span>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a
+                href="pages/layout/top-nav.html"
+                class="nav-link"
+            >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Add Holiday</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                href="pages/layout/top-nav.html"
+                class="nav-link"
+            >
+                <i class="far fa-circle nav-icon"></i>
+                <p>List Holidays</p>
+            </a>
+        </li>
+    </ul>
+</li>
