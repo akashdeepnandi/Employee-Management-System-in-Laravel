@@ -94,7 +94,7 @@ class AttendanceController extends Controller
         $attendances = $employee->attendance;
         $filter = false;
         if(request()->all()) {
-            if(!$attendances) {
+            if($attendances) {
                 [$start, $end] = explode(' - ', request()->input('date_range'));
                 $start = Carbon::parse($start);
                 $end = Carbon::parse($end)->addDay();
@@ -103,22 +103,22 @@ class AttendanceController extends Controller
                     if ($date->greaterThanOrEqualTo($start) && $date->lessThanOrEqualTo($end))
                         return true;
                 })->values();
+                $leaves = $employee->leave;
+                $leaves = $leaves->filter(function($leaves, $key) use ($start, $end) {
+                    $condition1 = $start->lessThanOrEqualTo($leaves->start_date) && $end->greaterThanOrEqualTo($leaves->start_date);
+                    $condition2 = $start->lessThanOrEqualTo($leaves->end_date) && $end->greaterThanOrEqualTo($leaves->end_date);
+                    $condition3 = $leaves->status == 'approved';
+                    return  ($condition1 || $condition2) && $condition3;
+                });
                 $attendances = collect();
                 $count = $filtered_attendances->count();
                 if($count) {
                     $first_day = $filtered_attendances->first()->created_at->dayOfYear;
-                    $attendances = $this->get_filtered_attendances($start, $end, $filtered_attendances, $first_day, $count);
+                    $attendances = $this->get_filtered_attendances($start, $end, $filtered_attendances, $first_day, $count, $leaves);
                 }
                 else{
                     while($start->lessThan($end)) {
-                        $attendance = new Attendance();
-                        $attendance->created_at = $start;
-                        if($start->dayOfWeek == 0) {
-                            $attendance->registered = 'sun';
-                        } else {
-                            $attendance->registered = 'no';
-                        }
-                        $attendances->add(new Attendance());
+                        $attendances->add($this->attendanceIfNotPresent($start, $leaves));
                         $start->addDay();
                     }
                 }
@@ -135,7 +135,7 @@ class AttendanceController extends Controller
         return view('employee.attendance.index')->with($data);
     }
 
-    public function get_filtered_attendances($start, $end, $filtered_attendances, $first_day, $count) {
+    public function get_filtered_attendances($start, $end, $filtered_attendances, $first_day, $count, $leaves) {
         $found_start = false;
         $key = 1;
         $attendances = collect();
@@ -144,28 +144,14 @@ class AttendanceController extends Controller
                 if($first_day == $start->dayOfYear()) {
                     $found_start = true;
                     $attendances->add($filtered_attendances->first());
-                } else{
-                    $attendance = new Attendance();
-                    $attendance->created_at = $start;
-                    if($start->dayOfWeek == 0) {
-                        $attendance->registered = 'sun';
-                    } else {
-                        $attendance->registered = 'no';
-                    }
-                    $attendances->add($attendance);
+                } else {
+                    $attendances->add($this->attendanceIfNotPresent($start, $leaves));
                 }
             } else {
                 // iterating over the 2nd to .. n dates
                 if ($key < $count) {
                     if($start->dayOfYear() != $filtered_attendances->get($key)->created_at->dayOfYear) {
-                        $attendance = new Attendance();
-                        $attendance->created_at = $start;
-                        if($start->dayOfWeek == 0) {
-                            $attendance->registered = 'sun';
-                        } else {
-                            $attendance->registered = 'no';
-                        }
-                        $attendances->add($attendance);
+                        $attendances->add($this->attendanceIfNotPresent($start, $leaves));
                     }
                     else {
                         $attendances->add($filtered_attendances->get($key));
@@ -173,20 +159,35 @@ class AttendanceController extends Controller
                     }
                 }
                 else {
-                    $attendance = new Attendance();
-                    $attendance->created_at = $start;
-                    if($start->dayOfWeek == 0) {
-                        $attendance->registered = 'sun';
-                    } else {
-                        $attendance->registered = 'no';
-                    }
-                    $attendances->add($attendance);
+                    $attendances->add($this->attendanceIfNotPresent($start, $leaves));
                 }
             }
             $start->addDay();
         }
 
         return $attendances;
+    }
+
+    public function checkLeave($leaves, $date) {
+        $leaves = $leaves->filter(function($leave, $key) use ($date) {
+            return $date->greaterThanOrEqualTo($leave->start_date) && $date->lessThanOrEqualTo($leave->end_date);
+        });
+
+        return $leaves->count();
+    }
+
+    public function attendanceIfNotPresent($start, $leaves) {
+        $attendance = new Attendance();
+        $attendance->created_at = $start;
+        if($start->dayOfWeek == 0) {
+            $attendance->registered = 'sun';
+        } elseif($this->checkLeave($leaves, $start)) {
+            $attendance->registered = 'leave';
+        } else {
+            $attendance->registered = 'no';
+        }
+
+        return $attendance;
     }
 
 }

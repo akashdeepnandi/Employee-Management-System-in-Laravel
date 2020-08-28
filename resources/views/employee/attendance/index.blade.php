@@ -117,6 +117,13 @@
                                         <td class="text-center">No records</td>
                                         <td class="text-center">No records</td>
                                         <td class="text-center">No records</td>
+                                        @elseif($attendance->registered == 'leave')
+                                        <td>{{ $attendance->created_at->format('d-m-Y') }}</td>
+                                        <td><h5 class="text-center"><span class="badge badge-pill badge-info">Leave</span> </h5></td>
+                                        <td class="text-center">No records</td>
+                                        <td class="text-center">No records</td>
+                                        <td class="text-center">No records</td>
+                                        <td class="text-center">No records</td>
                                         @else
                                         <td>{{ $attendance->created_at->format('d-m-Y') }}</td>
                                         <td><h5 class="text-center"><span class="badge badge-pill badge-warning">Half Day</span> </h5></td>
