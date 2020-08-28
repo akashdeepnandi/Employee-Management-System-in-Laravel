@@ -19,8 +19,8 @@ class CreateLeavesTable extends Migration
             $table->string('reason');
             $table->text('description');
             $table->string('half_day');
-            $table->timestamp('start_date');
-            $table->timestamp('end_date')->nullable();
+            $table->dateTime('start_date');
+            $table->dateTime('end_date')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();
         });

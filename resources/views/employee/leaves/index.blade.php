@@ -74,9 +74,9 @@
                                             </h5>
                                         </td>
                                         <td>{{ ucfirst($leave->half_day) }}</td>
-                                        <td>{{ $leave->start_date }}</td>
+                                        <td>{{ $leave->start_date->format('d-m-Y')}}</td>
                                         @if($leave->end_date) 
-                                        <td>{{ $leave->end_date }}</td>
+                                        <td>{{ $leave->end_date->format('d-m-Y') }}</td>
                                         @else
                                         <td>Single Day</td>
                                         @endif
