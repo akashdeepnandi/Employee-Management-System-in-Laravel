@@ -169,10 +169,11 @@ class AttendanceController extends Controller
     }
 
     public function checkLeave($leaves, $date) {
-        $leaves = $leaves->filter(function($leave, $key) use ($date) {
-            return $date->greaterThanOrEqualTo($leave->start_date) && $date->lessThanOrEqualTo($leave->end_date);
-        });
-
+        if ($leaves->count() != 0) {
+            $leaves = $leaves->filter(function($leave, $key) use ($date) {
+                return $date->greaterThanOrEqualTo($leave->start_date) && $date->lessThanOrEqualTo($leave->end_date);
+            });
+        }
         return $leaves->count();
     }
 
