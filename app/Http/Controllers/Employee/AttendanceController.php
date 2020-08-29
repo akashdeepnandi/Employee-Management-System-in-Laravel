@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Employee;
 use App\Http\Controllers\Controller;
 
 use App\Attendance;
+use App\Holiday;
 use App\Rules\DateRange;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -102,17 +103,17 @@ class AttendanceController extends Controller
                 $start = Carbon::parse($start);
                 $end = Carbon::parse($end)->addDay();
                 $filtered_attendances = $this->attendanceOfRange($attendances, $start, $end);
-                $leaves = $employee->leave;
-                $leaves = $this->leavesOfRange($leaves, $start, $end);
+                $leaves = $this->leavesOfRange($employee->leave, $start, $end);
+                $holidays = $this->holidaysOfRange(Holiday::all(), $start, $end);
                 $attendances = collect();
                 $count = $filtered_attendances->count();
                 if($count) {
                     $first_day = $filtered_attendances->first()->created_at->dayOfYear;
-                    $attendances = $this->get_filtered_attendances($start, $end, $filtered_attendances, $first_day, $count, $leaves);
+                    $attendances = $this->get_filtered_attendances($start, $end, $filtered_attendances, $first_day, $count, $leaves, $holidays);
                 }
                 else{
                     while($start->lessThan($end)) {
-                        $attendances->add($this->attendanceIfNotPresent($start, $leaves));
+                        $attendances->add($this->attendanceIfNotPresent($start, $leaves, $holidays));
                         $start->addDay();
                     }
                 }
@@ -129,7 +130,7 @@ class AttendanceController extends Controller
         return view('employee.attendance.index')->with($data);
     }
 
-    public function get_filtered_attendances($start, $end, $filtered_attendances, $first_day, $count, $leaves) {
+    public function get_filtered_attendances($start, $end, $filtered_attendances, $first_day, $count, $leaves, $holidays) {
         $found_start = false;
         $key = 1;
         $attendances = collect();
@@ -139,13 +140,13 @@ class AttendanceController extends Controller
                     $found_start = true;
                     $attendances->add($filtered_attendances->first());
                 } else {
-                    $attendances->add($this->attendanceIfNotPresent($start, $leaves));
+                    $attendances->add($this->attendanceIfNotPresent($start, $leaves, $holidays));
                 }
             } else {
                 // iterating over the 2nd to .. n dates
                 if ($key < $count) {
                     if($start->dayOfYear() != $filtered_attendances->get($key)->created_at->dayOfYear) {
-                        $attendances->add($this->attendanceIfNotPresent($start, $leaves));
+                        $attendances->add($this->attendanceIfNotPresent($start, $leaves, $holidays));
                     }
                     else {
                         $attendances->add($filtered_attendances->get($key));
@@ -153,7 +154,7 @@ class AttendanceController extends Controller
                     }
                 }
                 else {
-                    $attendances->add($this->attendanceIfNotPresent($start, $leaves));
+                    $attendances->add($this->attendanceIfNotPresent($start, $leaves, $holidays));
                 }
             }
             $start->addDay();
@@ -168,19 +169,40 @@ class AttendanceController extends Controller
                 // checks if the end date has a value
                 if($leave->end_date) {
                     // if it does then checks if the $date falls between the leave range
-                    return $date->greaterThanOrEqualTo($leave->start_date) && $date->lessThanOrEqualTo($leave->end_date);
+                    $condition1 = intval($date->dayOfYear) >= intval($leave->start_date->dayOfYear);
+                    $condition2 = intval($date->dayOfYear) <= intval($leave->end_date->dayOfYear);
+                    return $condition1 && $condition2;
                 }
                 // else checks if this day is a leave
-                return $date->equalTo($leave->start_date);
+                return $date->dayOfYear == $leave->start_date->dayOfYear;
             });
         }
         return $leaves->count();
     }
 
-    public function attendanceIfNotPresent($start, $leaves) {
+    public function checkHoliday($holidays, $date) {
+        if ($holidays->count() != 0) {
+            $holidays = $holidays->filter(function($holiday, $key) use ($date) {
+                // checks if the end date has a value
+                if($holiday->end_date) {
+                    // if it does then checks if the $date falls between the holiday range
+                    $condition1 = intval($date->dayOfYear) >= intval($holiday->start_date->dayOfYear);
+                    $condition2 = intval($date->dayOfYear) <= intval($holiday->end_date->dayOfYear);
+                    return $condition1 && $condition2;
+                }
+                // else checks if this day is a holiday
+                return $date->dayOfYear == $holiday->start_date->dayOfYear;
+            });
+        }
+        return $holidays->count();
+    }
+
+    public function attendanceIfNotPresent($start, $leaves, $holidays) {
         $attendance = new Attendance();
         $attendance->created_at = $start;
-        if($start->dayOfWeek == 0) {
+        if($this->checkHoliday($holidays, $start)) {
+            $attendance->registered = 'holiday';
+        } elseif($start->dayOfWeek == 0) {
             $attendance->registered = 'sun';
         } elseif($this->checkLeave($leaves, $start)) {
             $attendance->registered = 'leave';
@@ -192,13 +214,15 @@ class AttendanceController extends Controller
     }
 
     public function leavesOfRange($leaves, $start, $end) {
-        return $leaves->filter(function($leaves, $key) use ($start, $end) {
+        return $leaves->filter(function($leave, $key) use ($start, $end) {
             // checks if the start date is between the range
-            $condition1 = $start->lessThanOrEqualTo($leaves->start_date) && $end->greaterThanOrEqualTo($leaves->start_date);
+            $condition1 = (intval($start->dayOfYear) <= intval($leave->start_date->dayOfYear)) && (intval($end->dayOfYear) >= intval($leave->start_date->dayOfYear));
             // checks if the end date is between the range
-            $condition2 = $start->lessThanOrEqualTo($leaves->end_date) && $end->greaterThanOrEqualTo($leaves->end_date);
+            $condition2 = false;
+            if($leave->end_date)
+                $condition2 = (intval($start->dayOfYear) <= intval($leave->end_date->dayOfYear)) && (intval($end->dayOfYear) >= intval($leave->end_date->dayOfYear));
             // checks if the leave status is approved
-            $condition3 = $leaves->status == 'approved';
+            $condition3 = $leave->status == 'approved';
             // combining all the conditions
             return  ($condition1 || $condition2) && $condition3;
         });
@@ -207,9 +231,21 @@ class AttendanceController extends Controller
     public function attendanceOfRange($attendances, $start, $end) {
         return $attendances->filter(function($attendance, $key) use ($start, $end) {
                     $date = Carbon::parse($attendance->created_at);
-                    if ($date->greaterThanOrEqualTo($start) && $date->lessThanOrEqualTo($end))
+                    if ((intval($date->dayOfYear) >= intval($start->dayOfYear)) && (intval($date->dayOfYear) <= intval($end->dayOfYear)))
                         return true;
                 })->values();
+    }
+
+    public function holidaysOfRange($holidays, $start, $end) {
+        return $holidays->filter(function($holiday, $key) use ($start, $end) {
+            // checks if the start date is between the range
+            $condition1 = (intval($start->dayOfYear) <= intval($holiday->start_date->dayOfYear)) && (intval($end->dayOfYear) >= intval($holiday->start_date->dayOfYear));
+            // checks if the end date is between the range
+            $condition2 = false;
+            if($holiday->end_date)
+                $condition2 = (intval($start->dayOfYear) <= intval($holiday->end_date->dayOfYear)) && (intval($end->dayOfYear) >= intval($holiday->end_date->dayOfYear));
+            return  ($condition1 || $condition2);
+        });
     }
 
 }
