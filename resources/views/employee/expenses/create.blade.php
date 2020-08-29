@@ -6,7 +6,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-dark">Apply For Leave</h1>
+                    <h1 class="m-0 text-dark">Expense Claim</h1>
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-6">
@@ -15,7 +15,7 @@
                             <a href="{{ route('employee.index') }}">Employee Dashboard</a>
                         </li>
                         <li class="breadcrumb-item active">
-                            Apply For Leave
+                            Expense Claim
                         </li>
                     </ol>
                 </div>
@@ -36,11 +36,15 @@
                     <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title">
-                                Apply For Leave
+                                Expense Claim
                             </h3>
                         </div>
                         @include('messages.alerts')
-                        <form action="{{ route('employee.leaves.store', $employee->id) }}" method="POST">
+                        <form 
+                        action="{{ route('employee.expenses.store', $employee->id) }}" 
+                        method="POST" 
+                        enctype="multipart/form-data"
+                        >
                             @csrf
                             <div class="card-body">
                                 <div class="form-group">
@@ -54,7 +58,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="">Description</label>
-                                    <textarea name="description" class="form-control" >{{ old('description') }}</textarea>
+                                    <textarea name="description" class="form-control">{{ old('description') }}</textarea>
                                     @error('description')
                                     <div class="text-danger">
                                         {{ $message }}
@@ -62,31 +66,22 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label>Multiple Days</label>
-                                    <select class="form-control" name="multiple-days" onchange="showDate()">
-                                        <option value="yes" selected>Yes</option>
-                                        <option value="no">No</option>
-                                    </select>
-                                </div>
-                                <div class="form-group hide-input" id="half-day">
-                                    <label>Half Day</label>
-                                    <select class="form-control" name="half-day">
-                                        <option value="no">No</option>
-                                        <option value="yes">Yes</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" id="range-group">
-                                    <label for="">Date Range: </label>
-                                    <input type="text" name="date_range" id="date_range" class="form-control">
-                                    @error('date_range')
+                                    <label for="">Amount</label>
+                                    <input type="text" name="amount" value="{{ old('amount') }}" class="form-control">
+                                    @error('amount')
                                     <div class="text-danger">
                                         {{ $message }}
                                     </div>
                                     @enderror
                                 </div>
-                                <div class="form-group hide-input" id="date-group">
-                                    <label for="">Select Date </label>
-                                    <input type="text" name="date" id="date" class="form-control">
+                                <div class="form-group">
+                                    <label for="">Receipt Image</label>
+                                    <input type="file" name="receipt" class="form-control-file">
+                                    @error('receipt')
+                                    <div class="text-danger">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -106,24 +101,6 @@
 @section('extra-js')
 
 <script>
-    $(document).ready(function() {
-        $('#date_range').daterangepicker({
-            "locale": {
-                "format": "DD-MM-YYYY",
-            }
-        });
-        $('#date').daterangepicker({
-            "singleDatePicker": true,
-            "locale": {
-                "format": "DD-MM-YYYY",
-            }
-        });
-
-    });
-    function showDate() {
-        $('#range-group').toggleClass('hide-input');
-        $('#date-group').toggleClass('hide-input');
-        $('#half-day').toggleClass('hide-input');
-    }
+    
 </script>
 @endsection

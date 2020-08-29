@@ -50,7 +50,7 @@
     <link rel="stylesheet" href="/plugins/daterangepicker/daterangepicker.css">
     {{-- <link rel="stylesheet" href="/css/daterangepicker.css"> --}}
     <style>
-        .hide {
+        .hide-input {
             display: none;
         }
         

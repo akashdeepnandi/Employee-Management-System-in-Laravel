@@ -22,4 +22,8 @@ class Employee extends Model
     public function leave() {
         return $this->hasMany('App\Leave');
     }
+
+    public function expense() {
+        return $this->hasMany('App\Expense');
+    }
 }

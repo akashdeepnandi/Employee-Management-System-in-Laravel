@@ -2,29 +2,33 @@
 
 namespace App\Http\Controllers\Employee;
 
-use App\Holiday;
+use App\Expense;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class SelfController extends Controller
+class ExpenseController extends Controller
 {
-    public function holidays() {
+    public function index () {
+        $employee = Auth::user()->employee;
         $data = [
-            'holidays' => Holiday::all()
+            'employee' => $employee,
+            'expenses' => $employee->expense
         ];
-
-        return view('employee.self.holidays')->with($data);
+        return view('employee.expenses.index')->with($data);
     }
 
-    public function expenseClaim () {
+    public function create () {
         $data = [
             'employee' => Auth::user()->employee
         ];
-        return view('employee.self.expense-claim')->with($data);
+        return view('employee.expenses.create')->with($data);
     }
 
-    public function expenseStore(Request $request, $employee_id) {
+    public function store(Request $request, $employee_id) {
+        $data = [
+            'employee' => Auth::user()->employee
+        ];
         $this->validate($request, [
             'reason' => 'required',
             'description' => 'required',
@@ -44,8 +48,16 @@ class SelfController extends Controller
             // UPLOAD IMAGE
             $path = $request->file('receipt')->storeAs('public/receipts', $filename_store);
             } else {
-            $filename_store = 'noimg.jpg';
+            $filename_store = null;
             }
-        dd($path);
+        Expense::create([
+            'employee_id' => $employee_id,
+            'reason' => $request->input('reason'),
+            'description' => $request->input('description'),
+            'amount' => $request->input('amount'),
+            'receipt' => $filename_store
+        ]);
+        $request->session()->flash('success', 'Your expense claim has been successfully applied, wait for approval.');
+        return redirect()->route('employee.expenses.create')->with($data);
     }
 }

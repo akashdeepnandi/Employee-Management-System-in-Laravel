@@ -45,6 +45,12 @@ Route::namespace('Employee')->prefix('employee')->name('employee.')->middleware(
     Route::post('/leaves/{employee_id}', 'LeaveController@store')->name('leaves.store');
     // Routes for Leaves //
 
+    // Routes for Expenses//
+    Route::get('/expenses/list-expenses', 'ExpenseController@index')->name('expenses.index');
+    Route::get('/expenses/claim-expense', 'ExpenseController@create')->name('expenses.create');
+    Route::post('/expenses/{employee_id}', 'ExpenseController@store')->name('expenses.store');
+    // Routes for Expenses//
+
     // Routes for Self //
     Route::get('/self/holidays', 'SelfController@holidays')->name('self.holidays');
     // Routes for Self //
