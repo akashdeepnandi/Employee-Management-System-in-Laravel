@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Employee;
+use App\Http\Controllers\Controller;
 
 use App\Leave;
 use App\Rules\DateRange;

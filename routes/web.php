@@ -27,7 +27,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','can:admin-access'])-
     Route::get('/', 'AdminController@index')->name('index');
 });
 
-Route::prefix('employee')->name('employee.')->middleware(['auth','can:employee-access'])->group(function () {
+Route::namespace('Employee')->prefix('employee')->name('employee.')->middleware(['auth','can:employee-access'])->group(function () {
     Route::get('/', 'EmployeeController@index')->name('index');
     // Routes for Attendances //
     Route::get('/attendance/list-attendances', 'AttendanceController@index')->name('attendance.index');
