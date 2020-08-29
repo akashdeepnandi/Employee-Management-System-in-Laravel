@@ -31,29 +31,52 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-6 mx-auto">
+                <div class="col-md-3 mx-auto">
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title text-primary text-center">
-                                Search attendance using date range
-                            </div>
+                                <h5 class="text-center text-primary" style="text-align: center !important">Search attendance using date range</h5>
                         </div>
                         <div class="card-body">
-                            <div class="container">
+                            <div class="row">
+                                <div class="col-md-8 mx-auto text-center">
+                                    <form action="{{ route('employee.attendance.index') }}" method="POST">
+                                        @csrf
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label for="">Date Range</label>
+                                                <input type="text" name="date_range" placeholder="Start Date" class="form-control text-center"
+                                                id="date_range"
+                                                >
+                                                @error('date_range')
+                                                <div class="ml-2 text-danger">
+                                                    {{ $message }}
+                                                </div>
+                                                @enderror
+                                            </div>
+                                        </fieldset>
+                                        
+                                            <input type="submit" name="" class="btn btn-primary" value="Submit">
+                                        </div>
+                                        
+                                    </form>
+                                </div>
+                            </div>
+                            {{-- <div class="container">
                                 <form action="{{ route('employee.attendance.index') }}" class="row" method="POST">
                                     @csrf
                                     <div class="col-sm-9 mb-2">
+
                                         <div class="input-group">
                                             <input type="text" name="date_range" placeholder="Start Date" class="form-control"
                                             id="date_range"
                                             >
                                         </div>
-                                    </div>
-                                    {{-- <div class="col-sm-5 mb-2">
-                                        <div class="input-group">
-                                            <input type="text" name="end_date" placeholder="End Date" class="form-control">
+                                        @error('date_range')
+                                        <div class="ml-2 text-danger">
+                                            {{ $message }}
                                         </div>
-                                    </div> --}}
+                                        @enderror
+                                    </div>
                                     <div class="col-sm-3 mb-2">
                                         <div class="input-group">
                                             <input type="submit" name="" class="btn btn-primary" value="Submit">
@@ -61,7 +84,7 @@
                                     </div>
                                     
                                 </form>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>

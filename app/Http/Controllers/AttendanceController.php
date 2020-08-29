@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Attendance;
+use App\Rules\DateRange;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -94,22 +95,14 @@ class AttendanceController extends Controller
         $attendances = $employee->attendance;
         $filter = false;
         if(request()->all()) {
+            $this->validate(request(), ['date_range' => new DateRange]);
             if($attendances) {
                 [$start, $end] = explode(' - ', request()->input('date_range'));
                 $start = Carbon::parse($start);
                 $end = Carbon::parse($end)->addDay();
-                $filtered_attendances = $attendances->filter(function($attendance, $key) use ($start, $end) {
-                    $date = Carbon::parse($attendance->created_at);
-                    if ($date->greaterThanOrEqualTo($start) && $date->lessThanOrEqualTo($end))
-                        return true;
-                })->values();
+                $filtered_attendances = $this->attendanceOfRange($attendances, $start, $end);
                 $leaves = $employee->leave;
-                $leaves = $leaves->filter(function($leaves, $key) use ($start, $end) {
-                    $condition1 = $start->lessThanOrEqualTo($leaves->start_date) && $end->greaterThanOrEqualTo($leaves->start_date);
-                    $condition2 = $start->lessThanOrEqualTo($leaves->end_date) && $end->greaterThanOrEqualTo($leaves->end_date);
-                    $condition3 = $leaves->status == 'approved';
-                    return  ($condition1 || $condition2) && $condition3;
-                });
+                $leaves = $this->leavesOfRange($leaves, $start, $end);
                 $attendances = collect();
                 $count = $filtered_attendances->count();
                 if($count) {
@@ -171,7 +164,13 @@ class AttendanceController extends Controller
     public function checkLeave($leaves, $date) {
         if ($leaves->count() != 0) {
             $leaves = $leaves->filter(function($leave, $key) use ($date) {
-                return $date->greaterThanOrEqualTo($leave->start_date) && $date->lessThanOrEqualTo($leave->end_date);
+                // checks if the end date has a value
+                if($leave->end_date) {
+                    // if it does then checks if the $date falls between the leave range
+                    return $date->greaterThanOrEqualTo($leave->start_date) && $date->lessThanOrEqualTo($leave->end_date);
+                }
+                // else checks if this day is a leave
+                return $date->equalTo($leave->start_date);
             });
         }
         return $leaves->count();
@@ -189,6 +188,27 @@ class AttendanceController extends Controller
         }
 
         return $attendance;
+    }
+
+    public function leavesOfRange($leaves, $start, $end) {
+        return $leaves->filter(function($leaves, $key) use ($start, $end) {
+            // checks if the start date is between the range
+            $condition1 = $start->lessThanOrEqualTo($leaves->start_date) && $end->greaterThanOrEqualTo($leaves->start_date);
+            // checks if the end date is between the range
+            $condition2 = $start->lessThanOrEqualTo($leaves->end_date) && $end->greaterThanOrEqualTo($leaves->end_date);
+            // checks if the leave status is approved
+            $condition3 = $leaves->status == 'approved';
+            // combining all the conditions
+            return  ($condition1 || $condition2) && $condition3;
+        });
+    }
+
+    public function attendanceOfRange($attendances, $start, $end) {
+        return $attendances->filter(function($attendance, $key) use ($start, $end) {
+                    $date = Carbon::parse($attendance->created_at);
+                    if ($date->greaterThanOrEqualTo($start) && $date->lessThanOrEqualTo($end))
+                        return true;
+                })->values();
     }
 
 }
