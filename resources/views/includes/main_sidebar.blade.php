@@ -98,7 +98,7 @@
                 @endcan
                 @can('employee-access')
                 <li class="nav-item">
-                    <a href="pages/widgets.html" class="nav-link">
+                    <a href="{{ route('employee.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                                 Employee Dashboard
@@ -580,7 +580,7 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nafont-family: 'Montserrat', sans-serif;v-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Level 2</p>
                             </a>

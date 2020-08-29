@@ -109,6 +109,15 @@
         </li>
         <li class="nav-item">
             <a
+                href="{{ route('employee.self.holidays') }}"
+                class="nav-link"
+            >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Holiday List</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
                 href="pages/layout/top-nav.html"
                 class="nav-link"
             >

@@ -53,6 +53,7 @@
         .hide {
             display: none;
         }
+        
     </style>
     </head>
         @guest
