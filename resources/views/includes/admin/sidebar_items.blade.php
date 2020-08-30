@@ -4,13 +4,13 @@
         <p>
             Employees
             <i class="fas fa-angle-left right"></i>
-            <span class="badge badge-info right">2</span>
+            <span class="badge badge-info right">3</span>
         </p>
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
             <a
-                href="pages/layout/top-nav.html"
+                href="{{ route('admin.employees.create') }}"
                 class="nav-link"
             >
                 <i class="far fa-circle nav-icon"></i>
@@ -24,6 +24,45 @@
             >
                 <i class="far fa-circle nav-icon"></i>
                 <p>List Employees</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                href="pages/layout/top-nav.html"
+                class="nav-link"
+            >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Today's Attendance</p>
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="nav-item has-treeview">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fa fa-unlock-alt"></i>
+        <p>
+            Authorization
+            <i class="fas fa-angle-left right"></i>
+            <span class="badge badge-info right">2</span>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
+            <a
+                href="pages/layout/top-nav.html"
+                class="nav-link"
+            >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Leaves</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a
+                href="pages/layout/top-nav.html"
+                class="nav-link"
+            >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Expenses</p>
             </a>
         </li>
     </ul>

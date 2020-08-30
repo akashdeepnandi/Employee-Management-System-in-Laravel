@@ -1,64 +1,63 @@
 <?php
 
-namespace App\Http\Controllers\Employee;
+namespace App\Http\Controllers\Admin;
 
 use App\Department;
 use App\Employee;
 use App\Http\Controllers\Controller;
-use Intervention\Image\ImageManagerStatic as Image;
+use App\Role;
+use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+use Intervention\Image\ImageManagerStatic as Image;
+
+use function Ramsey\Uuid\v1;
 
 class EmployeeController extends Controller
 {
-    public function index() {
+    public function create() {
         $data = [
-            'employee' => Auth::user()->employee
-        ];
-        return view('employee.index')->with($data);
-    }
-
-    public function profile() {
-        $data = [
-            'employee' => Auth::user()->employee
-        ];
-        return view('employee.profile')->with($data);
-    }
-
-    public function profile_edit($employee_id) {
-        $data = [
-            'employee' => Employee::findOrFail($employee_id),
             'departments' => Department::all(),
             'desgs' => ['Manager', 'Assistant Manager', 'Deputy Manager', 'Clerk']
         ];
-        Gate::authorize('employee-profile-access', intval($employee_id));
-        return view('employee.profile-edit')->with($data);
+        return view('admin.employees.create')->with($data);
     }
 
-    public function profile_update(Request $request, $employee_id) {
-        Gate::authorize('employee-profile-access', intval($employee_id));
+    public function store(Request $request) {
         $this->validate($request, [
             'first_name' => 'required',
             'last_name' => 'required',
-            'photo' => 'image|nullable'
+            'sex' => 'required',
+            'desg' => 'required',
+            'department_id' => 'required',
+            'salary' => 'required|numeric',
+            'email' => 'required|email',
+            'photo' => 'image|nullable',
+            'password' => 'required|confirmed|min:6'
         ]);
-        $employee = Employee::findOrFail($employee_id);
+        $user = new User();
+        $user->name = $request->first_name.' '.$request->last_name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->save();
+        $employeeRole = Role::where('name', 'employee')->first();
+        $user->roles()->attach($employeeRole);
+        $user->save();
+        $employee = new Employee();
+        $employee->user_id = $user->id;
         $employee->first_name = $request->first_name;
         $employee->last_name = $request->last_name;
+        $employee->sex = $request->sex;
         $employee->dob = $request->dob;
-        $employee->sex = $request->gender;
         $employee->join_date = $request->join_date;
         $employee->desg = $request->desg;
         $employee->department_id = $request->department_id;
+        $employee->salary = $request->salary;
+        $employee->photo = 'user.png';
+        $employee->first_name = $request->first_name;
+        
+        // Photo upload
         if ($request->hasFile('photo')) {
-            // Deleting the old image
-            if ($employee->photo != 'user.png') {
-                $old_filepath = public_path(DIRECTORY_SEPARATOR.'storage'.DIRECTORY_SEPARATOR.'employee_photos'.DIRECTORY_SEPARATOR. $employee->photo);
-                if(file_exists($old_filepath)) {
-                    unlink($old_filepath);
-                }    
-            }
             // GET FILENAME
             $filename_ext = $request->file('photo')->getClientOriginalName();
             // GET FILENAME WITHOUT EXTENSION
@@ -76,8 +75,10 @@ class EmployeeController extends Controller
             $image_resize->save(public_path(DIRECTORY_SEPARATOR.'storage'.DIRECTORY_SEPARATOR.'employee_photos'.DIRECTORY_SEPARATOR.$filename_store));
             $employee->photo = $filename_store;
         }
+        
         $employee->save();
-        $request->session()->flash('success', 'Your profile has been successfully updated!');
-        return redirect()->route('employee.profile');
+        
+        $request->session()->flash('success', 'Employee has been successfully added');
+        return back();
     }
 }

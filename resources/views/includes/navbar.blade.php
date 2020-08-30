@@ -167,7 +167,11 @@
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <!-- User image -->
                 <li class="user-header bg-primary">
+                @if (Auth::user()->employee)
+                <img src="/storage/employee_photos/{{ Auth::user()->employee->photo }}" class="img-circle elevation-2" alt="User Image">
+                @else
                 <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                @endif
         
                 <p>
                     {{ Auth::user()->name }}

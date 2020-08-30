@@ -25,6 +25,11 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth','can:admin-access'])->group(function () {
     Route::get('/', 'AdminController@index')->name('index');
+    
+    // Routes for employees //
+    Route::get('/employees/add-employee', 'EmployeeController@create')->name('employees.create');
+    Route::post('/employees/add-employee', 'EmployeeController@store')->name('employees.store');
+    // Routes for employees //
 });
 
 Route::namespace('Employee')->prefix('employee')->name('employee.')->middleware(['auth','can:employee-access'])->group(function () {

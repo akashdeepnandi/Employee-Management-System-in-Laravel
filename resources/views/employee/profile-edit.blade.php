@@ -98,7 +98,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label for="">Department</label>
-                                        <select name="deparment" class="form-control">
+                                        <select name="department_id" class="form-control">
                                             @foreach ($departments as $department)
                                                 <option value="{{ $department->id }}"
                                                 @if ($department->id == $employee->department_id)

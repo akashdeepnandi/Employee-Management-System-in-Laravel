@@ -39,6 +39,13 @@
                     </div>
                     <div class="card-body">
                         @include('messages.alerts')
+                        <div class="row mb-3">
+                            <div class="col text-center mx-auto">
+                                <img src="/storage/employee_photos/{{ $employee->photo }}" class="rounded-circle img-fluid" alt=""
+                                style="box-shadow: 2px 4px rgba(0,0,0,0.1)"
+                                >
+                            </div>
+                        </div>
                         <table class="table table-hover">
                             <tr>
                                 <td>First Name</td>
@@ -73,42 +80,9 @@
                                 <td>Salary</td>
                                 <td>₹ {{ $employee->salary }}</td>
                             </tr>
-                            <tr>
-                                <td>Photo</td>
-                                @if ($employee->photo != 'user.png')
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-flat btn-primary" data-toggle="modal" data-target="#modal-default">
-                                            View Profile Photo
-                                        </button>
-                                    </td>
-                                @else 
-                                    <td>No image upload</td>
-                                @endif
-                                
-                            </tr>
                         </table>
-                        @if ($employee->photo != 'user.png')
-                        <div class="modal fade" id="modal-default">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                    <h4 class="modal-title">Profile Photo</h4>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <img src="/storage/employee_photos/{{ $employee->photo }}" alt="" class="img-fluid">
-                                    </div>
-                                </div>
-                                <!-- /.modal-content -->
-                            </div>
-                            <!-- /.modal-dialog -->
-                        </div>
-                        <!-- /.modal -->
-                        @endif
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer text-center">
                         <a href="{{ route('employee.profile-edit', $employee->id) }}" class="btn btn-flat btn-primary">Edit Profile</a>
                     </div>
                 </div>
