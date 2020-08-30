@@ -29,6 +29,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth','
 
 Route::namespace('Employee')->prefix('employee')->name('employee.')->middleware(['auth','can:employee-access'])->group(function () {
     Route::get('/', 'EmployeeController@index')->name('index');
+    Route::get('/profile', 'EmployeeController@profile')->name('profile');
+    Route::get('/profile-edit/{employee_id}', 'EmployeeController@profile_edit')->name('profile-edit');
+    Route::put('/profile/{employee_id}', 'EmployeeController@profile_update')->name('profile-update');
     // Routes for Attendances //
     Route::get('/attendance/list-attendances', 'AttendanceController@index')->name('attendance.index');
     Route::post('/attendance/list-attendances', 'AttendanceController@index')->name('attendance.index');
@@ -59,5 +62,7 @@ Route::namespace('Employee')->prefix('employee')->name('employee.')->middleware(
 
     // Routes for Self //
     Route::get('/self/holidays', 'SelfController@holidays')->name('self.holidays');
+    Route::get('/self/salary_slip', 'SelfController@salary_slip')->name('self.salary_slip');
+    Route::get('/self/salary_slip_print', 'SelfController@salary_slip_print')->name('self.salary_slip_print');
     // Routes for Self //
 });

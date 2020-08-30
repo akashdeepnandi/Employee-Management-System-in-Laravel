@@ -53,7 +53,10 @@
         .hide-input {
             display: none;
         }
-        
+        .table tr td:first-child {
+            font-weight: bold;
+            color: rgb(11, 72, 138);
+        }
     </style>
     </head>
         @guest
@@ -70,7 +73,7 @@
             @include('includes.navbar')
             @include('includes.main_sidebar')
             <!-- Content Wrapper. Contains page content -->
-            <div class="content-wrapper mt-0">
+            <div class="content-wrapper">
             @yield('content')
             </div>
             <footer class="main-footer">

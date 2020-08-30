@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
+    protected $dates = ['created_at', 'dob','updated_at', 'join_date'];
     public function user() {
         return $this->belongsTo('App\User');
     }

@@ -157,7 +157,11 @@
         </li> --}}
         <li class="nav-item dropdown user user-menu">
             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                @if (Auth::user()->employee)
+                <img src="/storage/employee_photos/{{ Auth::user()->employee->photo }}" class="user-image img-circle elevation-2 alt="User Image">
+                @else
                 <img src="/dist/img/user2-160x160.jpg" class="user-image img-circle elevation-2 alt="User Image">
+                @endif
                 <span class="hidden-xs">{{ Auth::user()->name }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -166,29 +170,25 @@
                 <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         
                 <p>
-                    {{ Auth::user()->name }} - Web Developer
-                    <small>Member since Nov. 2012</small>
+                    {{ Auth::user()->name }}
+                    @if ( Auth::user()->employee )
+                    - {{ Auth::user()->employee->desg }}, {{ Auth::user()->employee->department->name }}
+                    @endif 
                 </p>
                 </li>
                 <!-- Menu Body -->
-                <li class="user-body">
-                <div class="row">
-                    <div class="col-4 text-center">
-                    <a href="#">Followers</a>
-                    </div>
-                    <div class="col-4 text-center">
-                    <a href="#">Sales</a>
-                    </div>
-                    <div class="col-4 text-center">
-                    <a href="#">Friends</a>
-                    </div>
-                </div>
+                <li class="user-body text-center">
+                    @if ( Auth::user()->employee )
+                    <small>Member since {{ Auth::user()->employee->join_date->format('d M, Y') }}</small>
+                    @endif 
                 <!-- /.row -->
                 </li>
                 <!-- Menu Footer-->
                 <li class="user-footer">
                 <div class="pull-left">
-                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                    @if ( Auth::user()->employee )
+                    <a href="{{ route('employee.profile') }}" class="btn btn-default btn-flat">Profile</a>
+                    @endif
                 </div>
                 <div class="pull-right">
                     <a href="{{ route('logout') }}" 
