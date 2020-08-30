@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 
@@ -43,12 +43,18 @@ Route::namespace('Employee')->prefix('employee')->name('employee.')->middleware(
     Route::get('/leaves/apply', 'LeaveController@create')->name('leaves.create');
     Route::get('/leaves/list-leaves', 'LeaveController@index')->name('leaves.index');
     Route::post('/leaves/{employee_id}', 'LeaveController@store')->name('leaves.store');
+    Route::get('/leaves/edit-leave/{leave_id}', 'LeaveController@edit')->name('leaves.edit');
+    Route::put('/leaves/{leave_id}', 'LeaveController@update')->name('leaves.update');
+    Route::delete('/leaves/{leave_id}', 'LeaveController@destroy')->name('leaves.delete');
     // Routes for Leaves //
 
     // Routes for Expenses//
     Route::get('/expenses/list-expenses', 'ExpenseController@index')->name('expenses.index');
     Route::get('/expenses/claim-expense', 'ExpenseController@create')->name('expenses.create');
     Route::post('/expenses/{employee_id}', 'ExpenseController@store')->name('expenses.store');
+    Route::get('/expenses/edit-expense/{expense_id}', 'ExpenseController@edit')->name('expenses.edit');
+    Route::put('/expenses/{expense_id}', 'ExpenseController@update')->name('expenses.update');
+    Route::delete('/expenses/{expense_id}', 'ExpenseController@destroy')->name('expenses.delete');
     // Routes for Expenses//
 
     // Routes for Self //

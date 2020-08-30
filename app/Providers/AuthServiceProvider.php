@@ -32,5 +32,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('employee-access', function($user){
             return $user->hasRole('employee');
         });
+
+        Gate::define('employee-expenses-access', 'App\Policies\ExpensePolicy@expense_access');
+        Gate::define('employee-leaves-access', 'App\Policies\LeavePolicy@leave_access');
     }
 }
