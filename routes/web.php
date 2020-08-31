@@ -36,8 +36,14 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth','
     // Routes for employees //
 
     // Routes for leaves //
-    Route::get('/employees/list-leaves', 'LeaveController@index')->name('leaves.index');
+    Route::get('/leaves/list-leaves', 'LeaveController@index')->name('leaves.index');
+    Route::put('/leaves/{leave_id}', 'LeaveController@update')->name('leaves.update');
     // Routes for leaves //
+
+    // Routes for expenses //
+    Route::get('/expenses/list-expenses', 'ExpenseController@index')->name('expenses.index');
+    Route::put('/expenses/{expense_id}', 'ExpenseController@update')->name('expenses.update');
+    // Routes for expenses //
 });
 
 Route::namespace('Employee')->prefix('employee')->name('employee.')->middleware(['auth','can:employee-access'])->group(function () {

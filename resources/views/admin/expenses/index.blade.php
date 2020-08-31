@@ -6,7 +6,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-dark">List Leaves</h1>
+                    <h1 class="m-0 text-dark">List Expenses</h1>
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-6">
@@ -15,7 +15,7 @@
                             <a href="{{ route('admin.index') }}">Admin Dashboard</a>
                         </li>
                         <li class="breadcrumb-item active">
-                            List Leaves
+                            List Expenses
                         </li>
                     </ol>
                 </div>
@@ -41,10 +41,10 @@
                     @enderror
                     <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">List of leaves</h3>
+                            <h3 class="card-title">List of expenses</h3>
                         </div>
                         <div class="card-body">
-                            @if ($leaves->count())
+                            @if ($expenses->count())
                             <table class="table table-hover" id="dataTable">
                                 <thead>
                                     <tr>
@@ -55,45 +55,35 @@
                                         <th>Designation</th>
                                         <th>Reason</th>
                                         <th>Status</th>
-                                        <th class="none">Half Day</th>
-                                        <th class="none">Start Date</th>
-                                        <th class="none">End Date</th>
                                         <th class="none">Description</th>
                                         <td class="none">Actions</td>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($leaves as $index => $leave)
+                                    @foreach ($expenses as $index => $expense)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $leave->created_at->format('d-m-Y') }}</td>
-                                        <td>{{ $leave->employee->first_name.' '.$leave->employee->last_name }}</td>
-                                        <td>{{ $leave->employee->department }}</td>
-                                        <td>{{ $leave->employee->desg }}</td>
-                                        <td>{{ $leave->reason }}</td>
+                                        <td>{{ $expense->created_at->format('d-m-Y') }}</td>
+                                        <td>{{ $expense->employee->first_name.' '.$expense->employee->last_name }}</td>
+                                        <td>{{ $expense->employee->department }}</td>
+                                        <td>{{ $expense->employee->desg }}</td>
+                                        <td>{{ $expense->reason }}</td>
                                         <td>
                                             <h5>
                                                 <span 
-                                                @if ($leave->status == 'pending')
+                                                @if ($expense->status == 'pending')
                                                     class="badge badge-pill badge-warning"
-                                                @elseif($leave->status == 'declined')
+                                                @elseif($expense->status == 'declined')
                                                     class="badge badge-pill badge-danger"
-                                                @elseif($leave->status == 'approved')
+                                                @elseif($expense->status == 'approved')
                                                     class="badge badge-pill badge-success"
                                                 @endif
                                                 >
-                                                    {{ ucfirst($leave->status) }}
+                                                    {{ ucfirst($expense->status) }}
                                                 </span> 
                                             </h5>
                                         </td>
-                                        <td>{{ ucfirst($leave->half_day) }}</td>
-                                        <td>{{ $leave->start_date->format('d-m-Y')}}</td>
-                                        @if($leave->end_date) 
-                                        <td>{{ $leave->end_date->format('d-m-Y') }}</td>
-                                        @else
-                                        <td>Single Day</td>
-                                        @endif
-                                        <td>{{ $leave->description }}</td>
+                                        <td>{{ $expense->description }}</td>
                                         <td>
                                             <button 
                                             class="btn btn-flat btn-info"
@@ -107,17 +97,17 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            @for ($i = 1; $i < $leaves->count()+1; $i++)
+                            @for ($i = 1; $i < $expenses->count()+1; $i++)
                                 <!-- Modal -->
                                 <div class="modal fade" id="deleteModalCenter{{ $i }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalCenterTitle1{{ $i }}" aria-hidden="true">
                                     <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="card card-info">
                                                 <div class="card-header">
-                                                    <h5 style="text-align: center !important">Update Leave Status</h5>
+                                                    <h5 style="text-align: center !important">Update Expense Status</h5>
                                                 </div>
                                                 <form 
-                                                    action="{{ route('admin.leaves.update', $leaves->get($i-1)->id) }}"
+                                                    action="{{ route('admin.expenses.update', $expenses->get($i-1)->id) }}"
                                                     method="POST"
                                                 >
                                                 <div class="card-body">
