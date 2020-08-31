@@ -46,7 +46,7 @@
                                 >
                             </div>
                         </div>
-                        <table class="table table-hover">
+                        <table class="table profile-table table-hover">
                             <tr>
                                 <td>First Name</td>
                                 <td>{{ $employee->first_name }}</td>

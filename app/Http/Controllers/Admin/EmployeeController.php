@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Attendance;
 use App\Department;
 use App\Employee;
 use App\Http\Controllers\Controller;
 use App\Role;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\ImageManagerStatic as Image;
 
@@ -15,6 +18,12 @@ use function Ramsey\Uuid\v1;
 
 class EmployeeController extends Controller
 {
+    public function index() {
+        $data = [
+            'employees' => Employee::all()
+        ];
+        return view('admin.employees.index')->with($data);
+    }
     public function create() {
         $data = [
             'departments' => Department::all(),
@@ -35,27 +44,25 @@ class EmployeeController extends Controller
             'photo' => 'image|nullable',
             'password' => 'required|confirmed|min:6'
         ]);
-        $user = new User();
-        $user->name = $request->first_name.' '.$request->last_name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
+        $user = User::create([
+            'name' => $request->first_name.' '.$request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
+        ]);
         $employeeRole = Role::where('name', 'employee')->first();
         $user->roles()->attach($employeeRole);
-        $user->save();
-        $employee = new Employee();
-        $employee->user_id = $user->id;
-        $employee->first_name = $request->first_name;
-        $employee->last_name = $request->last_name;
-        $employee->sex = $request->sex;
-        $employee->dob = $request->dob;
-        $employee->join_date = $request->join_date;
-        $employee->desg = $request->desg;
-        $employee->department_id = $request->department_id;
-        $employee->salary = $request->salary;
-        $employee->photo = 'user.png';
-        $employee->first_name = $request->first_name;
-        
+        $employeeDetails = [
+            'user_id' => $user->id, 
+            'first_name' => $request->first_name, 
+            'last_name' => $request->last_name,
+            'sex' => $request->sex, 
+            'dob' => $request->dob, 
+            'join_date' => $request->join_date,
+            'desg' => $request->desg, 
+            'department_id' => $request->department_id, 
+            'salary' => $request->salary, 
+            'photo'  => 'user.png'
+        ];
         // Photo upload
         if ($request->hasFile('photo')) {
             // GET FILENAME
@@ -73,12 +80,40 @@ class EmployeeController extends Controller
             $image_resize = Image::make($image->getRealPath());              
             $image_resize->resize(300, 300);
             $image_resize->save(public_path(DIRECTORY_SEPARATOR.'storage'.DIRECTORY_SEPARATOR.'employee_photos'.DIRECTORY_SEPARATOR.$filename_store));
-            $employee->photo = $filename_store;
+            $employeeDetails['photo'] = $filename_store;
         }
         
-        $employee->save();
+        Employee::create($employeeDetails);
         
         $request->session()->flash('success', 'Employee has been successfully added');
         return back();
+    }
+
+    public function attendance(Request $request) {
+        $data = [
+            'date' => null
+        ];
+        if($request->all()) {
+            $date = Carbon::create($request->date);
+            $employees = $this->attendanceByDate($date);
+            $data['date'] = $date->format('d M, Y');
+        } else {
+            $employees = $this->attendanceByDate(Carbon::now());
+        }
+        $data['employees'] = $employees;
+        return view('admin.employees.attendance')->with($data);
+    }
+
+    public function attendanceByDate($date) {
+        $employees = DB::table('employees')->select('id', 'first_name', 'last_name', 'desg', 'department_id')->get();
+        $attendances = Attendance::all()->filter(function($attendance, $key) use ($date){
+            return $attendance->created_at->dayOfYear == $date->dayOfYear;
+        });
+        return $employees->map(function($employee, $key) use($attendances) {
+            $attendance = $attendances->where('employee_id', $employee->id)->first();
+            $employee->attendanceToday = $attendance;
+            $employee->department = Department::find($employee->department_id)->name;
+            return $employee;
+        });
     }
 }

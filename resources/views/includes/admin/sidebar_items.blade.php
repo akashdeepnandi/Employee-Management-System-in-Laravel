@@ -19,7 +19,7 @@
         </li>
         <li class="nav-item">
             <a
-                href="pages/layout/top-nav.html"
+                href="{{ route('admin.employees.index') }}"
                 class="nav-link"
             >
                 <i class="far fa-circle nav-icon"></i>
@@ -28,11 +28,11 @@
         </li>
         <li class="nav-item">
             <a
-                href="pages/layout/top-nav.html"
+                href="{{ route('admin.employees.attendance') }}"
                 class="nav-link"
             >
                 <i class="far fa-circle nav-icon"></i>
-                <p>Today's Attendance</p>
+                <p>Employee Attendance</p>
             </a>
         </li>
     </ul>

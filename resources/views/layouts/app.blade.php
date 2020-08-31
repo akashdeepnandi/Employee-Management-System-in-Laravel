@@ -53,7 +53,7 @@
         .hide-input {
             display: none;
         }
-        .table tr td:first-child {
+        .profile-table tr td:first-child {
             font-weight: bold;
             color: rgb(11, 72, 138);
         }

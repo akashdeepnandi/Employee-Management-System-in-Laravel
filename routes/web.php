@@ -27,8 +27,11 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth','
     Route::get('/', 'AdminController@index')->name('index');
     
     // Routes for employees //
+    Route::get('/employees/list-employees', 'EmployeeController@index')->name('employees.index');
     Route::get('/employees/add-employee', 'EmployeeController@create')->name('employees.create');
     Route::post('/employees/add-employee', 'EmployeeController@store')->name('employees.store');
+    Route::get('/employees/attendance', 'EmployeeController@attendance')->name('employees.attendance');
+    Route::post('/employees/attendance', 'EmployeeController@attendance')->name('employees.attendance');
     // Routes for employees //
 });
 
