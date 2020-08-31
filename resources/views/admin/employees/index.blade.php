@@ -30,6 +30,7 @@
     <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
+        @include('messages.alerts')
         <div class="row">
             <div class="col-lg-8 mx-auto">
                 <div class="card card-primary">
@@ -50,6 +51,7 @@
                                     <th>Designation</th>
                                     <th>Join Date</th>
                                     <th>Salary</th>
+                                    <th class="none">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -61,10 +63,48 @@
                                     <td>{{ $employee->desg }}</td>
                                     <td>{{ $employee->join_date->format('d M, Y') }}</td>
                                     <td>{{ $employee->salary }}</td>
+                                    <td>
+                                        <button 
+                                        class="btn btn-flat btn-danger"
+                                        data-toggle="modal" 
+                                        data-target="#deleteModalCenter{{ $index + 1 }}"
+                                        >Delete Employee</button>
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                            @for ($i = 1; $i < $employees->count()+1; $i++)
+                                <!-- Modal -->
+                                <div class="modal fade" id="deleteModalCenter{{ $i }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalCenterTitle1{{ $i }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="card card-danger">
+                                                <div class="card-header">
+                                                    <h5 style="text-align: center !important">Are you sure want to delete?</h5>
+                                                </div>
+                                                <div class="card-body text-center d-flex" style="justify-content: center">
+                                                    
+                                                    <button type="button" class="btn flat btn-secondary" data-dismiss="modal">No</button>
+                                                    
+                                                    <form 
+                                                    action="{{ route('admin.employees.delete', $employees->get($i-1)->id) }}"
+                                                    method="POST"
+                                                    >
+                                                    @csrf
+                                                    @method('DELETE')
+                                                        <button type="submit" class="btn flat btn-danger ml-1">Yes</button>
+                                                    </form>
+                                                </div>
+                                                <div class="card-footer text-center">
+                                                    <small>This action is irreversable</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.modal -->
+                            @endfor
                         @else
                         <div class="alert alert-info text-center" style="width:50%; margin: 0 auto">
                             <h4>No Records Available</h4>

@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg mx-auto">
+            <div class="col-lg-8 mx-auto">
                 <div class="card card-primary">
                     <div class="card-header">
                         <div class="card-title text-center">

@@ -116,4 +116,19 @@ class EmployeeController extends Controller
             return $employee;
         });
     }
+
+    public function destroy($employee_id) {
+        $employee = Employee::findOrFail($employee_id);
+        $user = User::findOrFail($employee->user_id);
+        // detaches all the roles
+        DB::table('leaves')->where('employee_id', '=', $employee_id)->delete();
+        DB::table('attendances')->where('employee_id', '=', $employee_id)->delete();
+        DB::table('expenses')->where('employee_id', '=', $employee_id)->delete();
+        $employee->delete();
+        $user->roles()->detach();
+        // deletes the users
+        $user->delete();
+        request()->session()->flash('success', 'Employee record has been successfully deleted');
+        return back();
+    }
 }

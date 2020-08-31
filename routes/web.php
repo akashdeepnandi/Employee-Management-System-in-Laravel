@@ -32,7 +32,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth','
     Route::post('/employees/add-employee', 'EmployeeController@store')->name('employees.store');
     Route::get('/employees/attendance', 'EmployeeController@attendance')->name('employees.attendance');
     Route::post('/employees/attendance', 'EmployeeController@attendance')->name('employees.attendance');
+    Route::delete('/employees/{employee_id}', 'EmployeeController@destroy')->name('employees.delete');
     // Routes for employees //
+
+    // Routes for leaves //
+    Route::get('/employees/list-leaves', 'LeaveController@index')->name('leaves.index');
+    // Routes for leaves //
 });
 
 Route::namespace('Employee')->prefix('employee')->name('employee.')->middleware(['auth','can:employee-access'])->group(function () {
