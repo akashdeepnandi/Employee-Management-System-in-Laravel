@@ -109,7 +109,7 @@
     <ul class="nav nav-treeview">
         <li class="nav-item">
             <a
-                href="pages/layout/top-nav.html"
+                href="{{ route('admin.holidays.create') }}"
                 class="nav-link"
             >
                 <i class="far fa-circle nav-icon"></i>
@@ -118,7 +118,7 @@
         </li>
         <li class="nav-item">
             <a
-                href="pages/layout/top-nav.html"
+                href="{{ route('admin.holidays.index') }}"
                 class="nav-link"
             >
                 <i class="far fa-circle nav-icon"></i>

@@ -29,7 +29,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth','
     // Routes for employees //
     Route::get('/employees/list-employees', 'EmployeeController@index')->name('employees.index');
     Route::get('/employees/add-employee', 'EmployeeController@create')->name('employees.create');
-    Route::post('/employees/add-employee', 'EmployeeController@store')->name('employees.store');
+    Route::post('/employees', 'EmployeeController@store')->name('employees.store');
     Route::get('/employees/attendance', 'EmployeeController@attendance')->name('employees.attendance');
     Route::post('/employees/attendance', 'EmployeeController@attendance')->name('employees.attendance');
     Route::delete('/employees/{employee_id}', 'EmployeeController@destroy')->name('employees.delete');
@@ -44,6 +44,15 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth','
     Route::get('/expenses/list-expenses', 'ExpenseController@index')->name('expenses.index');
     Route::put('/expenses/{expense_id}', 'ExpenseController@update')->name('expenses.update');
     // Routes for expenses //
+
+    // Routes for holidays //
+    Route::get('/holidays/list-holidays', 'HolidayController@index')->name('holidays.index');
+    Route::get('/holidays/add-holiday', 'HolidayController@create')->name('holidays.create');
+    Route::post('/holidays', 'HolidayController@store')->name('holidays.store');
+    Route::get('/holidays/edit-holiday/{holiday_id}', 'HolidayController@edit')->name('holidays.edit');
+    Route::put('/holidays/{holiday_id}', 'HolidayController@update')->name('holidays.update');
+    Route::delete('/holidays/{holiday_id}', 'HolidayController@destroy')->name('holidays.delete');
+    // Routes for holidays //
 });
 
 Route::namespace('Employee')->prefix('employee')->name('employee.')->middleware(['auth','can:employee-access'])->group(function () {
