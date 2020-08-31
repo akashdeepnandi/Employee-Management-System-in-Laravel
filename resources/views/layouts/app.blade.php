@@ -53,7 +53,7 @@
         .hide-input {
             display: none;
         }
-        .profile-table tr td:first-child {
+        .proftable tr td:first-child {
             font-weight: bold;
             color: rgb(11, 72, 138);
         }
@@ -86,8 +86,11 @@
                     <b>Version</b> 3.0.5
                 </div>
             </footer>
-            {{-- control sidebar include --}}
-            @include('includes.control_sidebar')
+            <!-- Control Sidebar -->
+            <aside class="control-sidebar control-sidebar-dark">
+                <!-- Control sidebar content goes here -->
+            </aside>
+            <!-- /.control-sidebar -->
         </div>
         <!-- ./wrapper -->
         @endguest
@@ -115,7 +118,7 @@
         {{-- font awesome --}}
         {{-- <script src="https://use.fontawesome.com/2d4c4e3d51.js"></script> --}}
         <!-- AdminLTE for demo purposes -->
-        {{-- <script src="/dist/js/demo.js"></script> --}}
+        <script src="/dist/js/demo.js"></script>
         <!-- DataTables -->
         <script src="/plugins/datatables/jquery.dataTables.min.js"></script>
         <script src="/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
