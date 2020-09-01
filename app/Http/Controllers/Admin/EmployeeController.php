@@ -101,6 +101,7 @@ class EmployeeController extends Controller
             $employees = $this->attendanceByDate(Carbon::now());
         }
         $data['employees'] = $employees;
+        // dd($employees->get(4)->attendanceToday->id);
         return view('admin.employees.attendance')->with($data);
     }
 
@@ -130,5 +131,17 @@ class EmployeeController extends Controller
         $user->delete();
         request()->session()->flash('success', 'Employee record has been successfully deleted');
         return back();
+    }
+
+    public function attendanceDelete($attendance_id) {
+        $attendance = Attendance::findOrFail($attendance_id);
+        $attendance->delete();
+        request()->session()->flash('success', 'Attendance record has been successfully deleted!');
+        return back();
+    }
+
+    public function employeeProfile($employee_id) {
+        $employee = Employee::findOrFail($employee_id);
+        return view('admin.employees.profile')->with('employee', $employee);
     }
 }

@@ -33,6 +33,11 @@
             <div class="row">
                 <div class="col-lg-8 mx-auto">
                     <!-- general form elements -->
+                    @include('messages.alerts')
+                    <div class="alert alert-success" id="demo">
+                        Location loading....
+                    </div>
+                    <button class="btn btn-flat btn-primary" onclick="getLocation()">Get Location</button>
                     <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title">Today's Attendance</h3>

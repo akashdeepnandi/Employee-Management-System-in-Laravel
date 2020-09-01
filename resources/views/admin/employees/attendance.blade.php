@@ -53,6 +53,7 @@
         </div>
         <div class="row">
             <div class="col-lg-8 mx-auto">
+                @include('messages.alerts')
                 <div class="card card-primary">
                     <div class="card-header">
                         <div class="card-title text-center">
@@ -77,6 +78,7 @@
                                     <th class="none">Exit Record</th>
                                     <th>Department</th>
                                     <th>Designation</th>
+                                    <th class="none">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -106,10 +108,54 @@
                                     @endif
                                     <td>{{ $employee->department }}</td>
                                     <td>{{ $employee->desg }}</td>
+                                    <td>
+                                        @if($employee->attendanceToday)
+                                        <button 
+                                        class="btn btn-flat btn-danger"
+                                        data-toggle="modal"
+                                        data-target="#deleteModalCenter{{ $employee->attendanceToday->id }}"
+                                        >Delete Record</button>
+                                        @else 
+                                        No actions available
+                                        @endif
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        @for ($i = 1; $i < $employees->count()+1; $i++)
+                                <!-- Modal -->
+                                @if($employees->get($i-1)->attendanceToday)
+                                <div class="modal fade" id="deleteModalCenter{{ $employees->get($i-1)->attendanceToday->id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalCenterTitle1{{ $employees->get($i-1)->attendanceToday->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="card card-danger">
+                                                <div class="card-header">
+                                                    <h5 style="text-align: center !important">Are you sure want to delete?</h5>
+                                                </div>
+                                                <div class="card-body text-center d-flex" style="justify-content: center">
+                                                    
+                                                    <button type="button" class="btn flat btn-secondary" data-dismiss="modal">No</button>
+                                                    
+                                                    <form 
+                                                    action="{{ route('admin.employees.attendance.delete', $employees->get($i-1)->attendanceToday->id) }}"
+                                                    method="POST"
+                                                    >
+                                                    @csrf
+                                                    @method('DELETE')
+                                                        <button type="submit" class="btn flat btn-danger ml-1">Yes</button>
+                                                    </form>
+                                                </div>
+                                                <div class="card-footer text-center">
+                                                    <small>This action is irreversable</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.modal -->
+                                @endif
+                            @endfor
                         @else
                         <div class="alert alert-info text-center" style="width:50%; margin: 0 auto">
                             <h4>No Records Available</h4>
