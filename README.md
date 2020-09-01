@@ -9,6 +9,7 @@ EAMS is a web application used for HRM of employees with robust authentication a
 
 - [Gates](https://laravel.com/docs/7.x/authorization) used  for authorizations.
 - [Session](https://laravel.com/docs/7.x/session) used for remembering the logged in user.
+- Optimal usage of laravel [advanced routing](https://laravel.com/docs/4.2/routing)
 - Fully responsive website across all devices and screen sizes.
 
 EAMS is fast and easy to use and can be customized easily according to client project
