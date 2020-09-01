@@ -9,6 +9,7 @@ use App\Rules\DateRange;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use phpDocumentor\Reflection\Location;
 
 class AttendanceController extends Controller
@@ -25,10 +26,25 @@ class AttendanceController extends Controller
             }
         }
     }
+    public function location(Request $request) {
+        
+        $response = Http::get('https://nominatim.openstreetmap.org/reverse?format=geojson&lat='.$request->lat.'&lon='.$request->lon);
+        // dd();
+        // $result = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $request->lat . ',' . $request->lon . '&key=AIzaSyC_spXZlR87VF9qq073nAhFGZ-f3K6enqk';
+        // $file_contents = file_get_contents($result);
 
+        // $json_decode = json_decode($file_contents);
+        // echo  $json_decode->results[0]->formatted_address;
+        // $response = array(
+        //     'status' => 'success',
+        //     'result' => $json_decode
+        // );
+        return $response->json()['features'][0]['properties']['display_name'];
+    }
 
     // Opens view for attendance register form
     public function create() {
+        
         $employee = Auth::user()->employee;
         $data = [
             'employee' => $employee,
@@ -48,11 +64,10 @@ class AttendanceController extends Controller
 
     // Stores entry record of attendance
     public function store(Request $request, $employee_id) {
-        
         $attendance = new Attendance([
                 'employee_id' => $employee_id,
                 'entry_ip' => $request->ip(),
-                'entry_location' => 'Kanakpur'
+                'entry_location' => $request->entry_location
         ]);
         $attendance->save();
         $request->session()->flash('success', 'Attendance entry successfully logged');
@@ -61,10 +76,9 @@ class AttendanceController extends Controller
 
     // Stores exit record of attendance
     public function update(Request $request, $attendance_id) {
-        
         $attendance = Attendance::findOrFail($attendance_id);
         $attendance->exit_ip = $request->ip();
-        $attendance->exit_location = 'Exit kanakpur';
+        $attendance->exit_location = $request->exit_location;
         $attendance->registered = 'yes';
         $attendance->save();
         $request->session()->flash('success', 'Attendance exit successfully logged');

@@ -67,6 +67,7 @@ Route::namespace('Employee')->prefix('employee')->name('employee.')->middleware(
     // Routes for Attendances //
     Route::get('/attendance/list-attendances', 'AttendanceController@index')->name('attendance.index');
     Route::post('/attendance/list-attendances', 'AttendanceController@index')->name('attendance.index');
+    Route::post('/attendance/get-location', 'AttendanceController@location')->name('attendance.get-location');
     Route::get('/attendance/register', 'AttendanceController@create')->name('attendance.create');
     Route::post('/attendance/{employee_id}', 'AttendanceController@store')->name('attendance.store');
     Route::put('/attendance/{attendance_id}', 'AttendanceController@update')->name('attendance.update');

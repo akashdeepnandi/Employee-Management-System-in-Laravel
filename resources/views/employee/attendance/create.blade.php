@@ -33,11 +33,6 @@
             <div class="row">
                 <div class="col-lg-8 mx-auto">
                     <!-- general form elements -->
-                    @include('messages.alerts')
-                    <div class="alert alert-success" id="demo">
-                        Location loading....
-                    </div>
-                    <button class="btn btn-flat btn-primary" onclick="getLocation()">Get Location</button>
                     <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title">Today's Attendance</h3>
@@ -74,11 +69,12 @@
                                             <input
                                             type="text"
                                             class="form-control text-center"
-                                            name="entry_location"
-                                            id="entry_location"
-                                            placeholder="..."
+                                            id="entry_loc"
+                                            placeholder="Locaton Loading..."
                                             disabled
                                             />
+                                            <input type="text" name="entry_location" name="entry_location"
+                                            id="entry_location" hidden>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -120,7 +116,6 @@
                                             class="form-control text-center"
                                             name="entry_location"
                                             value="{{ $attendance->entry_location }}"
-                                            id="entry_location"
                                             placeholder="..."
                                             disabled
                                             style="background: #333; color:#f4f4f4"
@@ -165,11 +160,18 @@
                                             <input
                                             type="text"
                                             class="form-control text-center"
-                                            name="exit_location"
-                                            id="exit_location"
+                                            id="exit_loc"
+                                            @if ($attendance)
+                                            placeholder="Loading location..."
+                                                
+                                            @else
                                             placeholder="..."
+                                                
+                                            @endif
                                             disabled
                                             />
+                                            <input type="text" name="exit_location"
+                                            id="exit_location" hidden>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -210,7 +212,6 @@
                                             type="text"
                                             class="form-control text-center"
                                             name="exit_location"
-                                            id="exit_location"
                                             value="{{ $attendance->exit_location }}"
                                             placeholder="..."
                                             disabled
@@ -263,4 +264,58 @@
     </section>
     <!-- /.content -->
 
+@endsection
+
+@section('extra-js')
+<script>
+// var x = document.getElementById("demo");
+// if('geolocation' in navigator) {
+//     console.log('gl available');
+//     navigator.geolocation.getCurrentPosition(position => {
+//         console.log('sda');
+//     })
+// }
+// function getLocation() {
+//     if (navigator.geolocation) {
+//         console.log('getting location')
+//         navigator.geolocation.getCurrentPosition(showPosition);
+//     } else { 
+//         x.innerHTML = "Geolocation is not supported by this browser.";
+//     }
+// }
+
+// function showPosition(position) {
+//     x.innerHTML = "Latitude: " + position.coords.latitude + 
+//     "<br>Longitude: " + position.coords.longitude;
+// }
+// /attendance/get-location
+$(document).ready(function() {
+    if ("geolocation" in navigator) {
+        console.log("gl available");
+        navigator.geolocation.getCurrentPosition(position => {
+            console.log(position.coords.latitude + "," + position.coords.longitude);
+            
+            $.post("/employee/attendance/get-location", 
+            {
+                lat: position.coords.latitude,
+                lon: position.coords.longitude,
+                '_token': $('meta[name=csrf-token]').attr('content'),
+            }
+            , function(data) {
+                console.log(!'{{ $registered_attendance }}')
+                    $('#entry_loc').val(data);
+                    $('#entry_location').val(data);
+                    if('{{ $attendance }}') {
+                        $('#exit_loc').val(data);
+                        $('#exit_location').val(data);
+                    }
+            });
+        }, function() {
+            $('#address').val('Denied Permission to retreive location');
+        });
+    } else {
+        $('#address').html("Location not available");
+    }
+});
+</script>
 @endsection
