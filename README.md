@@ -29,7 +29,7 @@ EAMS is fast and easy to use and can be customized easily according to client pr
 It has two sides employee and admin side.
 **Employee** has:
 - Attendance module
-	- Register attendance
+	- Register attendance [The images have 127.0.0.1 as IP because it was being tested locally, on live server it will catch client IP using laravel method Request()->ip]
 		- While recording user public IPv4 and current location in address format using reverse geocoding.
 	- List attendances
 
