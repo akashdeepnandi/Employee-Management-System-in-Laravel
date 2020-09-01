@@ -19,6 +19,7 @@ It has two sides employee and admin side.
 **Employee** has:
 - Attendance module
 	- Register attendance
+		- While recording user public IPv4 and current location in address format using reverse geocoding.
 	- List attendances
 - Leaves
 	- Apply for leaves
@@ -50,3 +51,5 @@ Following are the assets used for this project
 -	[DataRangePicker](https://www.daterangepicker.com/) for date pickers
 -	[DataTables](https://datatables.net/) for responsive table
 -	[Intervention/Image](http://image.intervention.io/getting_started/installation) package in laravel for image upload optimisaton
+-	[HTML Geolocation API](https://www.w3schools.com/html/html5_geolocation.asp) which works only on SSL, for using make sure your domain is SSL certified.
+-	[Nominatim](https://nominatim.org/) an open source geocoding API for reverse geocoding.
